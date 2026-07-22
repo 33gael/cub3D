@@ -60,7 +60,7 @@ the north texture:
 <details>
 <summary><strong>RESOURCES</strong></summary>
 
-To do this project we used some resources like: **[Gemini AI](https://gemini.google.com/)** to do a plan before start coding. We use this resources for understande [raycast](https://lodev.org/cgtutor/raycasting.html) and this [documentation](https://ibon-ira-cub3d.mintlify.app/concepts/textures) of minilibx.
+To do this project we used some resources like: **[Gemini AI](https://gemini.google.com/)** to do a plan before start coding. We use this resources to understand [raycast](https://lodev.org/cgtutor/raycasting.html) and this [documentation](https://ibon-ira-cub3d.mintlify.app/concepts/textures) of minilibx.
 
 </details>
 -----------------------------------------------------
