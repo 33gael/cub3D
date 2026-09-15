@@ -12,6 +12,7 @@
 
 #ifndef CUB3D_H
 # define CUB3D_H
+# define _POSIX_C_SOURCE 200809L
 
 # define WIDTH 1280
 # define HEIGHT 720
@@ -35,6 +36,7 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include <time.h>
 
 typedef struct s_player
 {
@@ -85,6 +87,9 @@ typedef struct s_game
 	char		*map_buffer;
 	char		*current_line;
 	int			fd;
+	double		last_frame;
+	double		delta_time;
+	bool		focused;
 }				t_game;
 
 typedef struct s_ray
@@ -125,8 +130,11 @@ void			load_texture(t_game *game, t_texture *tex, char *path);
 void			load_all_textures(t_game *game);
 void			init_game(t_game *game, char *map_file);
 int				get_texture_pixel(t_texture *tex, int x, int y);
+int				sample_texture(t_texture *tex, float x, float y);
 void			draw_line(t_player *p, t_game *g, float start_x, int i);
 void			move_player(t_game *game);
+void			init_timing(t_game *game);
+void			frame_time(t_game *game);
 int				key_press(int keycode, t_game *game);
 int				key_release(int keycode, t_game *game);
 

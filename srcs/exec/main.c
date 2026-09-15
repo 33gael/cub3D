@@ -21,13 +21,12 @@ int	close_game(t_game *game)
 
 int	draw_loop(t_game *game)
 {
-	float	fraction;
 	float	start_x;
 	int		i;
 	t_point	p;
 
+	frame_time(game);
 	move_player(game);
-	clear_image(game);
 	if (DEBUG)
 	{
 		p.x = game->player.x;
@@ -35,15 +34,15 @@ int	draw_loop(t_game *game)
 		draw_square(p, 10, 0x00FF00, game);
 		draw_map(game);
 	}
-	mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
-	fraction = PI / 3 / WIDTH;
-	start_x = game->player.angle - PI / 6;
 	i = 0;
 	while (i < WIDTH)
 	{
-		draw_line(&game->player, game, start_x, i++);
-		start_x += fraction;
+		start_x = game->player.angle + atan((2.0 * (i + 0.5)
+				/ WIDTH - 1.0) * tan(PI / 6));
+		draw_line(&game->player, game, start_x, i);
+		i++;
 	}
+	mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
 	return (0);
 }
 
@@ -58,6 +57,7 @@ int	main(int argc, char **argv)
 	}
 	ft_bzero(&game, sizeof(t_game));
 	init_game(&game, argv[1]);
+	init_timing(&game);
 	mlx_hook(game.win, 17, 0L, close_game, &game);
 	mlx_hook(game.win, 2, 1L << 0, key_press, &game);
 	mlx_hook(game.win, 3, 1L << 1, key_release, &game);

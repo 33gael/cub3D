@@ -12,56 +12,42 @@
 
 #include "cub3d.h"
 
-static void	rotate_player(t_player *p)
+static bool	blocked(t_game *g, float x, float y)
 {
-	if (p->left_rotate)
-		p->angle -= 0.03;
-	if (p->right_rotate)
-		p->angle += 0.03;
-	if (p->angle > 2 * PI)
-		p->angle = 0;
-	if (p->angle < 0)
-		p->angle = 2 * PI;
+	return (touch(x - 12, y - 12, g) || touch(x + 12, y - 12, g)
+		|| touch(x - 12, y + 12, g) || touch(x + 12, y + 12, g));
 }
 
-static void	apply_movement(t_player *p, float *n, float ca, float sa)
+static void	movement(t_game *g, float *dx, float *dy)
 {
-	if (p->key_up)
-	{
-		n[0] += ca;
-		n[1] += sa;
-	}
-	if (p->key_down)
-	{
-		n[0] -= ca;
-		n[1] -= sa;
-	}
-	if (p->key_left)
-	{
-		n[1] -= ca;
-		n[0] += sa;
-	}
-	if (p->key_right)
-	{
-		n[1] += ca;
-		n[0] -= sa;
-	}
+	float	forward;
+	float	side;
+	float	speed;
+
+	forward = g->player.key_up - g->player.key_down;
+	side = g->player.key_right - g->player.key_left;
+	speed = 160 * g->delta_time;
+	if (forward && side)
+		speed /= sqrtf(2);
+	*dx = (cosf(g->player.angle) * forward
+			- sinf(g->player.angle) * side) * speed;
+	*dy = (sinf(g->player.angle) * forward
+			+ cosf(g->player.angle) * side) * speed;
 }
 
 void	move_player(t_game *g)
 {
-	float	ca;
-	float	sa;
-	float	n[2];
+	float	dx;
+	float	dy;
 
-	rotate_player(&g->player);
-	ca = cos(g->player.angle) * 3;
-	sa = sin(g->player.angle) * 3;
-	n[0] = g->player.x;
-	n[1] = g->player.y;
-	apply_movement(&g->player, n, ca, sa);
-	if (!touch(n[0], g->player.y, g))
-		g->player.x = n[0];
-	if (!touch(g->player.x, n[1], g))
-		g->player.y = n[1];
+	if (!g->focused)
+		return ;
+	g->player.angle += (g->player.right_rotate - g->player.left_rotate)
+		* 2.2 * g->delta_time;
+	g->player.angle = remainderf(g->player.angle, 2 * PI);
+	movement(g, &dx, &dy);
+	if (!blocked(g, g->player.x + dx, g->player.y))
+		g->player.x += dx;
+	if (!blocked(g, g->player.x, g->player.y + dy))
+		g->player.y += dy;
 }

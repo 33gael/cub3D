@@ -79,26 +79,30 @@ static void	get_wall_texture(t_game *g, t_ray *r, t_player *p)
 			r->tex = &g->tex_n;
 	}
 	r->wall_x -= floor(r->wall_x);
-	r->tex_x = (int)(r->wall_x * (float)r->tex->width);
 	if ((r->side == 0 && r->ray_x < 0) || (r->side == 1 && r->ray_y > 0))
-		r->tex_x = r->tex->width - r->tex_x - 1;
+		r->wall_x = 1.0f - r->wall_x;
 }
 
 static void	draw_textured_line(t_game *g, t_ray *r, int i)
 {
-	int	y;
-	int	tex_y;
-	int	color;
+	int		y;
+	float	tex_y;
+	float	step;
+	float	tex_x;
+	int		color;
 
-	y = r->start_y;
-	while (y < r->end)
+	y = fmaxf(0, r->start_y);
+	step = r->tex->height / r->height;
+	tex_y = (y + 0.5f - (HEIGHT - r->height) * 0.5f) * step;
+	tex_x = fminf(r->tex->width - 1, r->wall_x * r->tex->width);
+	while (y < r->end && y < HEIGHT)
 	{
-		if (y >= 0 && y < HEIGHT)
-		{
-			tex_y = ((y - r->start_y) * r->tex->height) / r->height;
-			color = get_texture_pixel(r->tex, r->tex_x, tex_y);
-			put_pixel(i, y, color, g);
-		}
+		if (step < 1)
+			color = sample_texture(r->tex, tex_x - 0.5f, tex_y - 0.5f);
+		else
+			color = get_texture_pixel(r->tex, (int)tex_x, (int)tex_y);
+		put_pixel(i, y, color, g);
+		tex_y += step;
 		y++;
 	}
 }
@@ -114,7 +118,7 @@ void	draw_line(t_player *p, t_game *g, float start_x, int i)
 	r.dist *= cos(start_x - p->angle);
 	if (r.dist < 0.0001f)
 		r.dist = 0.0001f;
-	r.height = (BLOCK / r.dist) * (WIDTH / 2.0f);
+	r.height = (BLOCK / r.dist) * (WIDTH / (2.0f * tan(PI / 6)));
 	r.start_y = (HEIGHT - r.height) / 2;
 	r.end = r.start_y + r.height;
 	draw_3d_dda(i, r.start_y, r.end, g);

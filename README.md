@@ -1,5 +1,44 @@
 *This project has been created as part of the 42 curriculum by gaeducas, thbosvie.*
 
+## Version bonus
+
+```bash
+make bonus
+./cub3D_bonus bonus/maps/simple.cub
+```
+
+Le dossier `bonus/` contient une version simple : minimap, collisions,
+portes coulissantes et affichage optionnel des FPS. Le chemin d'une carte
+`.cub` est obligatoire au lancement.
+
+| Touche | Action |
+| --- | --- |
+| WASD | Se déplacer |
+| Flèches gauche / droite | Tourner |
+| E | Ouvrir / fermer une porte proche devant soi |
+| M | Afficher / masquer la minimap |
+| F | Afficher / masquer les FPS |
+| R | Revenir au départ et refermer les portes |
+| Échap | Quitter |
+
+La souris reste libre. La simulation se met en pause lorsque la fenêtre perd
+le focus. Une porte ne se referme pas sur le joueur.
+
+```bash
+./cub3D_bonus bonus/maps/simple.cub
+```
+
+Les cartes bonus utilisent les en-têtes habituels `NO`, `SO`, `WE`, `EA`,
+`F` et `C`, et ajoutent `D` pour les portes. Chaque porte doit être encadrée
+par deux murs opposés. Les textures murales utilisent un chemin XPM
+relatif au répertoire de lancement. Les textures bonus sont dans
+`Textures/bonus_*.xpm`, dont `Textures/bonus_door.xpm` pour les portes.
+Une carte doit contenir exactement un départ `N`, `S`, `E` ou `W`, être fermée
+et tenir dans 127 colonnes et 128 lignes.
+
+La fenêtre nécessite Linux avec X11/XWayland et les dépendances MiniLibX
+déjà utilisées par le projet. La version obligatoire reste accessible avec `make`.
+
 <details>
 <summary> <strong>DESCRIPTION</strong> </summary>
 
